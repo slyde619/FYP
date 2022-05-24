@@ -1,0 +1,190 @@
+// Decompiled with JetBrains decompiler
+// Type: Steganography.Form4
+// Assembly: Steganography, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: 510077CA-2768-4438-8E12-7BAE26DF6D97
+// Assembly location: C:\Users\Campus\Desktop\TeleHealth System\Debug\Steganography.exe
+
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace Steganography
+{
+  public class Form4 : Form
+  {
+    private IContainer components = (IContainer) null;
+    private PictureBox pictureBox6;
+    private Label label3;
+    private PictureBox pictureBox4;
+    private PictureBox pictureBox1;
+    private Button button1;
+    private PictureBox pictureBox3;
+    private RadioButton radioButton2;
+    private RadioButton radioButton1;
+    private GroupBox groupBox1;
+    private GroupBox groupBox2;
+
+    public Form4()
+    {
+      this.InitializeComponent();
+    }
+
+    private void pictureBox6_Click(object sender, EventArgs e)
+    {
+      if (this.radioButton1.Checked)
+      {
+        new Steganography.Steganography().Show();
+        this.Visible = false;
+      }
+      else
+      {
+        new Form1().Show();
+        this.Visible = false;
+      }
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+      new Form2().Show();
+      this.Visible = false;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+      if (disposing && this.components != null)
+        this.components.Dispose();
+      base.Dispose(disposing);
+    }
+
+    private void InitializeComponent()
+    {
+      ComponentResourceManager componentResourceManager = new ComponentResourceManager(typeof (Form4));
+      this.pictureBox6 = new PictureBox();
+      this.label3 = new Label();
+      this.pictureBox4 = new PictureBox();
+      this.pictureBox1 = new PictureBox();
+      this.button1 = new Button();
+      this.pictureBox3 = new PictureBox();
+      this.radioButton2 = new RadioButton();
+      this.radioButton1 = new RadioButton();
+      this.groupBox1 = new GroupBox();
+      this.groupBox2 = new GroupBox();
+      ((ISupportInitialize) this.pictureBox6).BeginInit();
+      ((ISupportInitialize) this.pictureBox4).BeginInit();
+      ((ISupportInitialize) this.pictureBox1).BeginInit();
+      ((ISupportInitialize) this.pictureBox3).BeginInit();
+      this.groupBox1.SuspendLayout();
+      this.groupBox2.SuspendLayout();
+      this.SuspendLayout();
+      this.pictureBox6.Image = (Image) componentResourceManager.GetObject("pictureBox6.Image");
+      this.pictureBox6.Location = new Point(187, 44);
+      this.pictureBox6.Name = "pictureBox6";
+      this.pictureBox6.Size = new Size(115, 110);
+      this.pictureBox6.SizeMode = PictureBoxSizeMode.StretchImage;
+      this.pictureBox6.TabIndex = 17;
+      this.pictureBox6.TabStop = false;
+      this.pictureBox6.Click += new EventHandler(this.pictureBox6_Click);
+      this.label3.AutoSize = true;
+      this.label3.BackColor = Color.White;
+      this.label3.BorderStyle = BorderStyle.Fixed3D;
+      this.label3.FlatStyle = FlatStyle.Popup;
+      this.label3.Font = new Font("Microsoft Sans Serif", 15.75f, FontStyle.Bold, GraphicsUnit.Point, (byte) 0);
+      this.label3.Location = new Point(640, 11);
+      this.label3.Name = "label3";
+      this.label3.Size = new Size(156, 27);
+      this.label3.TabIndex = 16;
+      this.label3.Text = "Data Security";
+      this.pictureBox4.Image = (Image) componentResourceManager.GetObject("pictureBox4.Image");
+      this.pictureBox4.Location = new Point(4, 175);
+      this.pictureBox4.Name = "pictureBox4";
+      this.pictureBox4.Size = new Size(162, 112);
+      this.pictureBox4.TabIndex = 7;
+      this.pictureBox4.TabStop = false;
+      this.pictureBox1.BorderStyle = BorderStyle.Fixed3D;
+      this.pictureBox1.Image = (Image) componentResourceManager.GetObject("pictureBox1.Image");
+      this.pictureBox1.Location = new Point(0, -1);
+      this.pictureBox1.Name = "pictureBox1";
+      this.pictureBox1.Size = new Size(798, 228);
+      this.pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+      this.pictureBox1.TabIndex = 13;
+      this.pictureBox1.TabStop = false;
+      this.button1.BackColor = Color.FromArgb(0, 0, 192);
+      this.button1.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Bold, GraphicsUnit.Point, (byte) 0);
+      this.button1.ForeColor = Color.White;
+      this.button1.Location = new Point(16, 53);
+      this.button1.Name = "button1";
+      this.button1.Size = new Size(131, 101);
+      this.button1.TabIndex = 18;
+      this.button1.Text = "SIGN OUT";
+      this.button1.UseVisualStyleBackColor = false;
+      this.button1.Click += new EventHandler(this.button1_Click);
+      this.pictureBox3.Image = (Image) componentResourceManager.GetObject("pictureBox3.Image");
+      this.pictureBox3.Location = new Point(6, 43);
+      this.pictureBox3.Name = "pictureBox3";
+      this.pictureBox3.Size = new Size(160, 108);
+      this.pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
+      this.pictureBox3.TabIndex = 7;
+      this.pictureBox3.TabStop = false;
+      this.radioButton2.AutoSize = true;
+      this.radioButton2.Location = new Point(172, 218);
+      this.radioButton2.Name = "radioButton2";
+      this.radioButton2.Size = new Size(138, 41);
+      this.radioButton2.TabIndex = 2;
+      this.radioButton2.TabStop = true;
+      this.radioButton2.Text = " Image";
+      this.radioButton2.UseVisualStyleBackColor = true;
+      this.radioButton1.AutoSize = true;
+      this.radioButton1.Location = new Point(172, 70);
+      this.radioButton1.Name = "radioButton1";
+      this.radioButton1.Size = new Size(100, 41);
+      this.radioButton1.TabIndex = 1;
+      this.radioButton1.TabStop = true;
+      this.radioButton1.Text = "Text";
+      this.radioButton1.UseVisualStyleBackColor = true;
+      this.groupBox1.BackColor = Color.FromArgb(192, 192, (int) byte.MaxValue);
+      this.groupBox1.Controls.Add((Control) this.pictureBox4);
+      this.groupBox1.Controls.Add((Control) this.pictureBox3);
+      this.groupBox1.Controls.Add((Control) this.radioButton2);
+      this.groupBox1.Controls.Add((Control) this.radioButton1);
+      this.groupBox1.FlatStyle = FlatStyle.Popup;
+      this.groupBox1.Font = new Font("Microsoft Sans Serif", 24f, FontStyle.Bold, GraphicsUnit.Point, (byte) 0);
+      this.groupBox1.Location = new Point(0, 228);
+      this.groupBox1.Name = "groupBox1";
+      this.groupBox1.Size = new Size(382, 291);
+      this.groupBox1.TabIndex = 12;
+      this.groupBox1.TabStop = false;
+      this.groupBox1.Text = " Data Security System";
+      this.groupBox2.Controls.Add((Control) this.button1);
+      this.groupBox2.Controls.Add((Control) this.pictureBox6);
+      this.groupBox2.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Bold, GraphicsUnit.Point, (byte) 0);
+      this.groupBox2.Location = new Point(456, 350);
+      this.groupBox2.Name = "groupBox2";
+      this.groupBox2.Size = new Size(308, 160);
+      this.groupBox2.TabIndex = 19;
+      this.groupBox2.TabStop = false;
+      this.groupBox2.Text = "Actions";
+      this.AutoScaleDimensions = new SizeF(6f, 13f);
+      this.AutoScaleMode = AutoScaleMode.Font;
+      this.ClientSize = new Size(798, 522);
+      this.Controls.Add((Control) this.groupBox2);
+      this.Controls.Add((Control) this.label3);
+      this.Controls.Add((Control) this.pictureBox1);
+      this.Controls.Add((Control) this.groupBox1);
+      this.FormBorderStyle = FormBorderStyle.Fixed3D;
+      this.Icon = (Icon) componentResourceManager.GetObject("$this.Icon");
+      this.Name = nameof (Form4);
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text = "Telemessaging Data Security System";
+      ((ISupportInitialize) this.pictureBox6).EndInit();
+      ((ISupportInitialize) this.pictureBox4).EndInit();
+      ((ISupportInitialize) this.pictureBox1).EndInit();
+      ((ISupportInitialize) this.pictureBox3).EndInit();
+      this.groupBox1.ResumeLayout(false);
+      this.groupBox1.PerformLayout();
+      this.groupBox2.ResumeLayout(false);
+      this.ResumeLayout(false);
+      this.PerformLayout();
+    }
+  }
+}

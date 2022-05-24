@@ -1,0 +1,88 @@
+// Decompiled with JetBrains decompiler
+// Type: Steganography.Form5
+// Assembly: Steganography, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: 510077CA-2768-4438-8E12-7BAE26DF6D97
+// Assembly location: C:\Users\Campus\Desktop\TeleHealth System\Debug\Steganography.exe
+
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace Steganography
+{
+  public class Form5 : Form
+  {
+    private IContainer components = (IContainer) null;
+    private ProgressBar progressBar1;
+    private Timer timer1;
+    private Label label1;
+
+    public Form5()
+    {
+      this.InitializeComponent();
+    }
+
+    private void timer1_Tick(object sender, EventArgs e)
+    {
+      this.progressBar1.Increment(1);
+      if (this.progressBar1.Value != 100)
+        return;
+      this.timer1.Stop();
+      new Form2().Show();
+      this.Hide();
+      int num = (int) MessageBox.Show(" iNFOSECURE Application started successfully, click OK to continue!");
+    }
+
+    private void Form5_Load(object sender, EventArgs e)
+    {
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+      if (disposing && this.components != null)
+        this.components.Dispose();
+      base.Dispose(disposing);
+    }
+
+    private void InitializeComponent()
+    {
+      this.components = (IContainer) new Container();
+      ComponentResourceManager componentResourceManager = new ComponentResourceManager(typeof (Form5));
+      this.progressBar1 = new ProgressBar();
+      this.timer1 = new Timer(this.components);
+      this.label1 = new Label();
+      this.SuspendLayout();
+      this.progressBar1.Location = new Point(131, 490);
+      this.progressBar1.Name = "progressBar1";
+      this.progressBar1.Size = new Size(485, 34);
+      this.progressBar1.TabIndex = 0;
+      this.timer1.Enabled = true;
+      this.timer1.Tick += new EventHandler(this.timer1_Tick);
+      this.label1.AutoSize = true;
+      this.label1.BackColor = SystemColors.ActiveBorder;
+      this.label1.Font = new Font("Microsoft Sans Serif", 20.25f, FontStyle.Bold, GraphicsUnit.Point, (byte) 0);
+      this.label1.ForeColor = Color.White;
+      this.label1.Location = new Point(105, 443);
+      this.label1.Name = "label1";
+      this.label1.Size = new Size(542, 31);
+      this.label1.TabIndex = 1;
+      this.label1.Text = "Please wait while the application loads...";
+      this.AutoScaleDimensions = new SizeF(6f, 13f);
+      this.AutoScaleMode = AutoScaleMode.Font;
+      this.BackgroundImage = (Image) componentResourceManager.GetObject("$this.BackgroundImage");
+      this.BackgroundImageLayout = ImageLayout.Stretch;
+      this.ClientSize = new Size(772, 539);
+      this.Controls.Add((Control) this.label1);
+      this.Controls.Add((Control) this.progressBar1);
+      this.FormBorderStyle = FormBorderStyle.None;
+      this.Icon = (Icon) componentResourceManager.GetObject("$this.Icon");
+      this.Name = nameof (Form5);
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text = "iNFOSECURE";
+      this.Load += new EventHandler(this.Form5_Load);
+      this.ResumeLayout(false);
+      this.PerformLayout();
+    }
+  }
+}
