@@ -1,0 +1,555 @@
+// this code calls C# library functions
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace Steganography_F5
+{
+    public partial class Form2 : Form
+    {
+        public Form2()
+        {
+            InitializeComponent();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+           
+
+        }
+//this code is for login window, you must login before you have access to the program
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            string password1 = "Admin12345";
+            string password2 = "User12345";
+            string user1 = "Admin";
+            String user2 = "Guest";
+
+
+            if (usernameText.Text == user1 & passwordText.Text == password1 & comboBox1 .Text =="Sender")
+            {
+                Form4 f4 = new Form4( );
+                f4.Show();
+                this.Hide();
+            }
+            //else
+            //{
+            //    MessageBox.Show("Sorry, the details you entered are incorrect, please refer to your user mannual for correct user login details");
+            //}
+            else if (usernameText.Text == user2 & passwordText.Text == password2 & comboBox1 .Text =="Receiver")
+            {
+                Form4 f4 = new Form4();
+                f4.Show();
+                this.Hide();
+            }
+            else
+            {
+                MessageBox.Show("Sorry, the details you entered are incorrect, please refer to your user mannual for correct user login details");
+            }
+
+        }
+//this is for exit
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+    }
+}
+
+
+//this is the next screen you see. It is a menu screen that allows you to select if you want to use IMAGE-IMAGE or TEXT-IMAGE
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace Steganography_F5
+{
+    public partial class Form4 : Form
+    {
+        public Form4()
+        {
+            InitializeComponent();
+            
+        }
+
+        private void pictureBox6_Click(object sender, EventArgs e)
+        {
+            if (radioButton1.Checked)
+            {
+                Steganography_F5 f3 = new Steganography_F5();
+                f3.Show();
+                Visible = false;
+
+            }
+            else
+            {
+                Form1 f1 = new Form1();
+                f1.Show();
+                Visible = false;
+            }
+
+          
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Form2 f2 = new Form2();
+            f2.Show();
+            Visible = false;
+
+        }
+
+        //private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        //{
+
+        //}
+    }
+}
+
+//F5- Embedding process CODE
+using System;
+using System.Drawing;
+using System.IO;
+
+namespace F5
+{
+    using F5.Jpg;
+    public static class Embed
+    {
+        public static void Run(params string[] args)
+        {
+            if (args.Length < 1)
+            {
+                StandardUsage();
+                return;
+            }
+
+            bool haveInputImage = false;
+            string inFileName = null;
+            string outFileName = null;
+            string embFileName = null;
+            string password = null;
+            string comment = string.Empty;
+            int quality = 80;
+            int i;
+
+            for (i = 0; i < args.Length; i++)
+            {
+                if (!args[i].StartsWith("-"))
+                {
+                    if (!haveInputImage)
+                    {
+                        switch (Path.GetExtension(args[i]))
+                        {
+                            case ".jpg":
+                            case ".tif":
+                            case ".gif":
+                            case ".bmp":
+                            case ".png":
+                                inFileName = args[i];
+                                outFileName = Path.GetFileNameWithoutExtension(args[i]) + ".jpg";
+                                haveInputImage = true;
+                                break;
+                            default:
+                                StandardUsage();
+                                return;
+                        }
+                    }
+                    else
+                    {
+                        outFileName = Path.GetFileNameWithoutExtension(args[i]) + ".jpg";
+                    }
+                    continue;
+                }
+                if (args.Length < i + 1)
+                {
+                    MessageBox.Show("Missing parameter for switch " + args[i]);
+                    StandardUsage();
+                    return;
+                }
+
+                switch (args[i])
+                {
+                    case "-e":
+                        embFileName = args[i + 1];
+                        break;
+                    case "-p":
+                        password = args[i + 1];
+                        break;
+                    case "-q":
+                        if (!int.TryParse(args[i + 1], out quality))
+                        {
+                            StandardUsage();
+                            return;
+                        }
+                        break;
+                    case "-c":
+                        comment = args[i + 1];
+                        break;
+                    default:
+                        Console.WriteLine("Unknown switch " + args[i] + " ignored.");
+                        break;
+                }
+                i++;
+            }
+
+            i = 1;
+            while (File.Exists(outFileName))
+            {
+                outFileName = Path.GetFileNameWithoutExtension(outFileName) + i++ + ".jpg";
+                if(i > 100)
+                {
+                    Environment.Exit(0);
+                }
+            }
+
+            if (!File.Exists(inFileName))
+            {
+                MessageBox.Show("I couldn't find " + inFileName + ". Is it in another directory?");
+                return;
+            }
+
+            using (Image image = Image.FromFile(inFileName))
+            using (JpegEncoder jpg = new JpegEncoder(image, File.OpenWrite(outFileName), comment, quality))
+            {
+                if (embFileName == null)
+                {
+                    jpg.Compress();
+                }
+                else
+                {
+                    jpg.Compress(File.OpenRead(embFileName), password);
+                }
+            }
+        }
+
+//F5 - Extraction Process CODE
+using System;
+using System.IO;
+
+namespace F5
+{
+    public static class Extract
+    {
+        public static void Run(params string[] args)
+        {
+            if (args.Length < 1)
+            {
+                StandardUsage();
+                return;
+            }
+
+            string jpegFileName = null;
+            string embFileName = null;
+            string password = null;
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (!args[i].StartsWith("-"))
+                {
+                    if (!args[i].EndsWith(".jpg"))
+                    {
+                        StandardUsage();
+                        return;
+                    }
+                    jpegFileName = args[i];
+                    continue;
+                }
+                if (args.Length < i + 1)
+                {
+                    MessageBox.Show("Missing parameter for switch " + args[i]);
+                    StandardUsage();
+                    return;
+                }
+                if (args[i].Equals("-e"))
+                {
+                    embFileName = args[i + 1];
+                }
+                else if (args[i].Equals("-p"))
+                {
+                    password = args[i + 1];
+                }
+                else
+                {
+                    MessageBox.Show("Unknown switch " + args[i] + " ignored.");
+                }
+                i++;
+            }
+
+            using (JpegExtract extractor = new JpegExtract(File.OpenWrite(embFileName), password))
+            {
+                extractor.Extract(File.OpenRead(jpegFileName));
+            }
+        }
+
+
+//Code for Matrix Encoding of Password
+Vector a = new Vector(3);
+Vector b = new Vector(3);
+Vector c = new Vector(3);
+Vector d = new Vector(3);
+Vector e = new Vector(3);
+Vector f = new Vector(3);
+Vector storeKey = new Vector(3);
+	
+(a+b+c+d+e+f*3).AssignTo(storeKey)();
+
+//this code converts image to grayscale
+private void buttonBrowseSecret_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Bitmap Image (.bmp)|*.bmp| Gif Image (.gif)|*.gif | JPG Image (.jpg)|*.jpg| Png Image (.png)|*.png";
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                Bitmap img = new Bitmap(ofd.FileName);
+                pictureBoxSecret.Image = ToGreyScale(img);
+                buttonSaveAsGrey.Enabled = true;
+            }
+        }
+
+//this code brings up a save dialog box and allows the stego image to be saved
+private void buttonSaveAsGrey_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Bitmap Image (.bmp)|*.bmp|Gif Image (.gif)|*.gif |JPEG Image (.jpeg)|*.jpeg |Png Image (.png)|*.png ";
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                pictureBoxSecret.Image.Save(sfd.FileName);
+            }
+        }
+
+// this code generates the final stego image of F5
+ private void buttonGenerateResult_Click(object sender, EventArgs e)
+        {
+            Bitmap simple = new Bitmap(pictureBoxSimple.Image);
+            Bitmap secretGreyScale = new Bitmap(pictureBoxSecret.Image);
+
+            if (secretGreyScale.Height != simple.Height || secretGreyScale.Width != simple.Width)
+            {
+                ResizeBilinear resizeFilter = new ResizeBilinear(simple.Width, simple.Height);
+                secretGreyScale = resizeFilter.Apply(secretGreyScale);
+            }
+
+            /* Variables initialization */
+            Color pixelContainerImage = new Color();
+            Color pixelMsgImage = new Color();
+
+            key = int.Parse(textBoxKey.Text);
+
+            byte[] MsgBits;
+            byte[] AlphaBits;
+            byte[] RedBits;
+            byte[] GreenBits;
+            byte[] BlueBits;
+
+            byte newAlpha = 0;
+            byte newRed = 0;
+            byte newGreen = 0;
+            byte newBlue = 0;
+
+            /* Image Encryption */
+            #region Encryption
+
+            for (int i = 0; i < simple.Height; i++)
+            {
+                for (int j = 0; j < simple.Width; j++)
+                {
+                    pixelMsgImage = secretGreyScale.GetPixel(j, i);
+                    MsgBits = getBits((byte)pixelMsgImage.R);
+
+                    pixelContainerImage = simple.GetPixel(j, i);
+                    AlphaBits = getBits((byte)pixelContainerImage.A);
+                    RedBits = getBits((byte)pixelContainerImage.R);
+                    GreenBits = getBits((byte)pixelContainerImage.G);
+                    BlueBits = getBits((byte)pixelContainerImage.B);
+
+                    AlphaBits[6] = MsgBits[0];
+                    AlphaBits[7] = MsgBits[1];
+
+                    RedBits[6] = MsgBits[2];
+                    RedBits[7] = MsgBits[3];
+
+                    GreenBits[6] = MsgBits[4];
+                    GreenBits[7] = MsgBits[5];
+
+                    BlueBits[6] = MsgBits[6];
+                    BlueBits[7] = MsgBits[7];
+
+                    newAlpha = getByte(AlphaBits);
+                    newRed = getByte(RedBits);
+                    newGreen = getByte(GreenBits);
+                    newBlue = getByte(BlueBits);
+
+                    pixelContainerImage = Color.FromArgb(newAlpha, newRed, newGreen, newBlue);
+                    simple.SetPixel(j, i, pixelContainerImage);
+                    
+                }
+               // richTextBox1.Text += "\n";    
+            }
+            pictureBoxResult.Image = simple;
+            // in the line below the value of pixels are changed
+            MessageBox.Show(((Bitmap)pictureBoxResult.Image).GetPixel(0, 0).B.ToString());
+           //  but if this will give the correct modified value
+            MessageBox.Show(simple.GetPixel(0, 0).B.ToString());
+
+            buttonSaveAs.Enabled = true;
+            #endregion
+        }
+
+ // encryptionMenuItem
+            // 
+            this.encryptionMenuItem.Index = 3;
+            this.encryptionMenuItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.encryptMenuItem,
+            this.decryptMenuItem,
+            this.generateKeyPairMenuItem});
+            this.encryptionMenuItem.Text = "Encryption";
+            // 
+            // encryptMenuItem
+            // 
+            this.encryptMenuItem.Index = 0;
+            this.encryptMenuItem.Text = "Encrypt...";
+            this.encryptMenuItem.Click += new System.EventHandler(this.encryptMenuItem_Click);
+            // 
+            // decryptMenuItem
+            // 
+            this.decryptMenuItem.Index = 1;
+            this.decryptMenuItem.Text = "Decrypt...";
+            this.decryptMenuItem.Click += new System.EventHandler(this.decryptMenuItem_Click);
+            // 
+            // generateKeyPairMenuItem
+            // 
+            this.generateKeyPairMenuItem.Index = 2;
+            this.generateKeyPairMenuItem.Text = "Generate Key Pair...";
+            this.generateKeyPairMenuItem.Click += new System.EventHandler(this.generateKeyPairMenuItem_Click);
+            // 
+
+//this code is the segment that does RSA Decryption of plain text
+private void decryptMenuItem_Click( object sender, EventArgs e )
+		{
+			if( inputTextBox.Text.Length != 0 )
+			{
+				openFileDialog.FileName = "";
+				openFileDialog.Title = "Open Private Key File";
+				openFileDialog.Filter = "Private Key Document( *.kez )|*.kez";
+				string fileString = null;
+				if( openFileDialog.ShowDialog() == DialogResult.OK )
+				{
+					if( File.Exists( openFileDialog.FileName ) )
+					{
+						StreamReader streamReader = new StreamReader( openFileDialog.FileName, true );
+						fileString = streamReader.ReadToEnd();
+						streamReader.Close();
+						if( fileString.Length >= inputTextBox.MaxLength )
+						{ MessageBox.Show( "ERROR: \nThe file you are trying to open is too big for the text editor to display properly.\nPlease open a smaller document!\nOperation Aborted!" ); }
+					}
+				}
+				if( File.Exists( openFileDialog.FileName ) )
+				{
+					string bitStrengthString = fileString.Substring( 0, fileString.IndexOf( "</BitStrength>" ) + 14 );
+					fileString = fileString.Replace( bitStrengthString, "" );
+					int bitStrength = Convert.ToInt32( bitStrengthString.Replace( "<BitStrength>", "" ).Replace( "</BitStrength>", "" ) );
+					Point point = new Point( ( inputTextBox.Size.Width / 2 ) - ( panel.Size.Width / 2 ), ( inputTextBox.Size.Height / 2 ) - ( panel.Size.Height / 2 ) );
+					panel.Location = point;
+					panel.Visible = true;
+					this.Refresh();
+					fileMenuItem.Enabled = false;
+					editMenuItem.Enabled = false;
+					formatMenuItem.Enabled = false;
+					encryptionMenuItem.Enabled = false;
+					helpMenuItem.Enabled = false;
+					string tempStorage = inputTextBox.Text;
+					if( fileString != null )
+					{
+						FinishedProcessDelegate finishedProcessDelegate = new FinishedProcessDelegate( FinishedProcess );
+						UpdateTextDelegate updateTextDelegate = new UpdateTextDelegate( UpdateText );
+						try
+						{
+							EncryptionThread decryptionThread = new EncryptionThread();
+							Thread decryptThread = new Thread( decryptionThread.Decrypt );
+							decryptThread.IsBackground = true;
+							decryptThread.Start( new Object[] { this, finishedProcessDelegate, updateTextDelegate, inputTextBox.Text, bitStrength, fileString } );
+						}
+						catch( CryptographicException CEx )
+						{ MessageBox.Show( "Message:\nThe length of the text being encrypted is greater than the maximum allowed length.\nThe OAEP padding is not supported on this computer.\n" + "Exact error: " + CEx.Message ); }
+						catch( Exception Ex )
+						{
+							MessageBox.Show( "ERROR:\n" + Ex.Message );
+							SetText( tempStorage );
+						}
+					}
+				}
+			}
+			else
+			{ MessageBox.Show( "Message: You Can Not Decrypt A NULL or empty Value!!!" ); }
+		}
+
+// this RSA code does the encryption
+private void encryptMenuItem_Click( object sender, EventArgs e )
+		{
+			if( inputTextBox.Text.Length != 0 )
+			{
+				openFileDialog.FileName = "";
+				openFileDialog.Title = "Open Public Key File";
+				openFileDialog.Filter = "Public Key Document( *.pke )|*.pke";
+				string fileString = null;
+				if( openFileDialog.ShowDialog() == DialogResult.OK )
+				{
+					if( File.Exists( openFileDialog.FileName ) )
+					{
+						StreamReader streamReader = new StreamReader( openFileDialog.FileName, true );
+						fileString = streamReader.ReadToEnd();
+						streamReader.Close();
+						if( fileString.Length >= inputTextBox.MaxLength )
+						{ MessageBox.Show( "ERROR: \nThe file you are trying to open is too big for the text editor to display properly.\nPlease open a smaller document!\nOperation Aborted!" ); }
+					}
+				}
+				if( fileString != null )
+				{
+					FinishedProcessDelegate finishedProcessDelegate = new FinishedProcessDelegate( FinishedProcess );
+					UpdateTextDelegate updateTextDelegate = new UpdateTextDelegate( UpdateText );
+					string bitStrengthString = fileString.Substring( 0, fileString.IndexOf( "</BitStrength>" ) + 14 );
+					fileString = fileString.Replace( bitStrengthString, "" );
+					int bitStrength = Convert.ToInt32( bitStrengthString.Replace( "<BitStrength>", "" ).Replace( "</BitStrength>", "" ) );
+					Point point = new Point( ( inputTextBox.Size.Width / 2 ) - ( panel.Size.Width / 2 ), ( inputTextBox.Size.Height / 2 ) - ( panel.Size.Height / 2 ) );
+					panel.Location = point;
+					panel.Visible = true;
+					this.Refresh();
+					fileMenuItem.Enabled = false;
+					editMenuItem.Enabled = false;
+					formatMenuItem.Enabled = false;
+					encryptionMenuItem.Enabled = false;
+					helpMenuItem.Enabled = false;
+					if( fileString != null )
+					{
+						try
+						{
+							EncryptionThread encryptionThread = new EncryptionThread();
+							Thread encryptThread = new Thread( encryptionThread.Encrypt );
+							encryptThread.IsBackground = true;
+							encryptThread.Start( new Object[] { this, finishedProcessDelegate, updateTextDelegate, inputTextBox.Text, bitStrength, fileString } );
+						}
+						catch( CryptographicException CEx )
+						{ MessageBox.Show( "Message: \The length of the text being encrypted is greater than the maximum allowed length.\nThe OAEP padding is not supported on this computer.\n" + "Exact error: " + CEx.Message ); }
+						catch( Exception Ex )
+						{ MessageBox.Show( "Message: \n" + Ex.Message ); }
+					}
+				}
+			}
+			else
+			{ MessageBox.Show( "Message: You Can Not Encrypt A NULL or empty Value!!!" ); }
+		}
